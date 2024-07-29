@@ -1,0 +1,46 @@
+<div>
+  <h2>Order Entry Screen UI</h2>
+  <form [formGroup]="orderForm" (ngSubmit)="onSubmit()">
+    <table>
+      <thead>
+        <tr>
+          <th>Toppings</th>
+          <th *ngFor="let size of pizzaSizes">{{ size.name }} ({{ size.price | currency }})</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let category of toppingCategories">
+          <tr>
+            <td colspan="5">{{ category.name }}</td>
+          </tr>
+          <tr *ngFor="let topping of category.toppings">
+            <td>{{ topping.name }} ({{ topping.price | currency }})</td>
+            <td *ngFor="let size of pizzaSizes">
+              <input 
+                type="checkbox" 
+                [formControlName]="getControlName(topping.name, size.name)" 
+                (change)="updateTotal()"
+              />
+            </td>
+          </tr>
+        </ng-container>
+        <ng-container *ngFor="let offer of offers">
+          <tr *ngIf="isOfferEligible(offer)">
+            <td>{{ offer.description }}</td>
+            <td *ngFor="let size of pizzaSizes">
+              <input 
+                type="checkbox" 
+                [formControlName]="getOfferControlName(offer.description, size.name)" 
+                (change)="updateTotal()"
+              />
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+    <div>
+      <h3>Total: {{ total | currency }}</h3>
+    </div>
+    <button type="submit">Submit Order</button>
+  </form>
+</div>
